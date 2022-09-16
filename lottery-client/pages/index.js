@@ -41,7 +41,7 @@ export default function Home() {
       /* Postavljamo vrijednost jednog uloga na 0.005 Ethera */
       await lcContract.methods.enter().send({
         from: address,
-        value: '5000000000000000',
+        value: '15000000000000000',
         gas: 300000,
         gasPrice: null
       })
