@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Web3 from 'web3'
-import lotteryContract from '../blockchain/lottery'
+import lotteryContract from '../blockchain-solidity/lottery'
 import styles from '../styles/Home.module.css'
 import 'bulma/css/bulma.css'
 
@@ -133,6 +133,15 @@ export default function Home() {
                       <div className="content">
                         <h2> Players ({lotteryPlayers.length})</h2>
                         <ul className="ml-0">
+                        {
+                            (lotteryPlayers && lotteryPlayers.length > 0) && lotteryPlayers.map((player, index) => {
+                              return <li key={`${player}-${index}`}>
+                                <a href={`https://etherscan.io/address/${player}`} target="_blank">
+                                  {player}
+                                </a>
+                              </li>
+                            })
+                          }
                         </ul>
                       </div>
                     </div>
@@ -143,7 +152,7 @@ export default function Home() {
                     <div className="card-content">
                       <div className="content">
                         <h2>Pot</h2>
-                        <p>Ether</p>
+                        <p>{lotteryPot} Ether</p>
                       </div>
                     </div>
                   </div>
