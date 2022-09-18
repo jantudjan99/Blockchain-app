@@ -10,7 +10,7 @@ export default function Home() {
   const [web3, setWeb3] = useState()
   const [address, setAddress] = useState()
   const [lcContract, setLcContract] = useState()
-  const [lotteryPot, setLotteryPot] = useState()
+  const [lotteryPool, setlotteryPool] = useState()
   const [lotteryPlayers, setPlayers] = useState([])
   
   const [successMsg, setSuccessMsg] = useState('')
@@ -26,7 +26,7 @@ export default function Home() {
 
   const getPot = async () => {
     const pot = await lcContract.methods.getBalance().call()
-    setLotteryPot(web3.utils.fromWei(pot, 'ether'))
+    setlotteryPool(web3.utils.fromWei(pot, 'ether'))
   }
 
   const getPlayers = async () => {
@@ -41,7 +41,7 @@ export default function Home() {
       /* Postavljamo vrijednost jednog uloga na 0.005 Ethera */
       await lcContract.methods.enter().send({
         from: address,
-        value: '15000000000000000',
+        value: '5000000000000000',
         gas: 300000,
         gasPrice: null
       })
@@ -112,8 +112,8 @@ export default function Home() {
             <div className="columns">
               <div className="column is-two-thirds">
                 <section className="mt-5">
-                  <p>Join the lottery (0.015 Ether cost)</p>
-                  <button onClick={enterLotteryHandler} className="button is-link is-large is-light mt-3">Play now</button>
+                  <p>Join the lottery (0.005 Ether cost)</p>
+                  <button onClick={enterLotteryHandler} className="button button-color is-large is-light mt-3">Play now</button>
                 </section>
                 <section>
                   <div className="container has-text-danger mt-6">
@@ -131,12 +131,12 @@ export default function Home() {
                   <div className="card">
                     <div className="card-content">
                       <div className="content">
-                        <h2> Players ({lotteryPlayers.length})</h2>
+                        <h2> Players in game : {lotteryPlayers.length}</h2>
                         <ul className="ml-0">
                         {
                             (lotteryPlayers && lotteryPlayers.length > 0) && lotteryPlayers.map((player, index) => {
                               return <li key={`${player}-${index}`}>
-                                <a href={`https://etherscan.io/address/${player}`} target="_blank">
+                                Player: <a href={`https://etherscan.io/address/${player}`} target="_blank">
                                   {player}
                                 </a>
                               </li>
@@ -151,8 +151,8 @@ export default function Home() {
                   <div className="card">
                     <div className="card-content">
                       <div className="content">
-                        <h2>Pot</h2>
-                        <p>{lotteryPot} Ether</p>
+                        <h2>Pool</h2>
+                        <p>{lotteryPool} Ether</p>
                       </div>
                     </div>
                   </div>

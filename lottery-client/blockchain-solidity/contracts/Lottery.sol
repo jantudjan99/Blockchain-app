@@ -9,8 +9,8 @@ contract Lottery is VRFConsumerBase {
     uint public lotteryId;
     mapping (uint => address payable) public lotteryHistory;
 
-    bytes32 internal keyHash; // identifies which Chainlink oracle to use
-    uint internal fee;        // fee to get random number
+    bytes32 internal keyHash; //specijalizacija za Chainlink oracle
+    uint internal fee;        
     uint public randomResult;
 
     constructor()
@@ -49,7 +49,7 @@ contract Lottery is VRFConsumerBase {
     function enter() public payable {
         require(msg.value > .01 ether);
 
-        // address of player entering lottery
+        // adresa igraća koji igra lutriju
         players.push(payable(msg.sender));
     }
 
@@ -65,7 +65,7 @@ contract Lottery is VRFConsumerBase {
         lotteryHistory[lotteryId] = players[index];
         lotteryId++;
         
-        // reset the state of the contract
+        // resetiraj stanje ugovora
         players = new address payable[](0);
         randomResult = 0;
     }
