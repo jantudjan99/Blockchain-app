@@ -12,6 +12,8 @@ export default function Home() {
   const [lcContract, setLcContract] = useState()
   const [lotteryPool, setlotteryPool] = useState()
   const [lotteryPlayers, setPlayers] = useState([])
+  const [lotteryHistory, setLotteryHistory] = useState([])
+  const [lotteryId, setLotteryId] = useState()
   
   const [successMsg, setSuccessMsg] = useState('')
 
@@ -22,6 +24,7 @@ export default function Home() {
   const updateState = () => {
     if (lcContract) getPot()
     if (lcContract) getPlayers()
+    if (lcContract) getLotteryId()
   }
 
   const getPot = async () => {
@@ -32,6 +35,24 @@ export default function Home() {
   const getPlayers = async () => {
     const players = await lcContract.methods.getPlayers().call()
     setPlayers(players)
+  }
+
+  const getHistory = async (id) => {
+    setLotteryHistory([])
+    for (let i = parseInt(id); i > 0; i--) {
+      console.log('get History')
+      const winnerAddress = await lcContract.methods.lotteryHistory(i).call()
+      const historyObj = {}
+      historyObj.id = i
+      historyObj.address = winnerAddress
+      setLotteryHistory(lotteryHistory => [...lotteryHistory, historyObj])
+    }
+  }
+
+  const getLotteryId = async () => {
+    const lotteryId = await lcContract.methods.lotteryId().call()
+    setLotteryId(lotteryId)
+    await getHistory(lotteryId)
   }
 
   const enterLotteryHandler = async () => {
@@ -45,6 +66,24 @@ export default function Home() {
         gas: 300000,
         gasPrice: null
       })
+      updateState()
+    } catch(err) {
+      setError(err.message)
+    }
+  }
+
+  const payWinnerHandler = async () => {
+    setError('')
+    setSuccessMsg('')
+    try {
+      await lcContract.methods.payWinner().send({
+        from: address,
+        gas: 300000,
+        gasPrice: null
+      })
+      console.log(`Id of lottery: ${lotteryId}`)
+      const winnerAddress = await lcContract.methods.lotteryHistory(lotteryId).call()
+      setSuccessMsg(`Winner of lottery is: ${winnerAddress}`)
       updateState()
     } catch(err) {
       setError(err.message)
@@ -89,7 +128,7 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>Lottery crypto application</title>
+        <title>Lottery application</title>
         <meta name="description" content="An Ethereum Lottery dApp" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -112,8 +151,12 @@ export default function Home() {
             <div className="columns">
               <div className="column is-two-thirds">
                 <section className="mt-5">
-                  <p>Join the lottery (0.005 Ether cost)</p>
+                  <b><p>Join the lottery (0.005 Ether cost)</p></b>
                   <button onClick={enterLotteryHandler} className="button button-color is-large is-light mt-3">Play now</button>
+                </section>
+                <section className="mt-6">
+                  <p><b>Pay winner</b></p>
+                  <button onClick={payWinnerHandler} className="button is-success is-large is-light mt-3">Pay Winner</button>
                 </section>
                 <section>
                   <div className="container has-text-danger mt-6">
@@ -127,19 +170,22 @@ export default function Home() {
                 </section>
               </div>
               <div className={`${styles.lotteryinfo} column is-one-third`}>
+              <section className="mt-5">
+                </section>
                 <section className="mt-5">
                   <div className="card">
                     <div className="card-content">
                       <div className="content">
                         <h2> Players in game : {lotteryPlayers.length}</h2>
-                        <ul className="ml-0">
+                        <ul className="ml-0"><b>Player's wallet id:</b>
                         {
                             (lotteryPlayers && lotteryPlayers.length > 0) && lotteryPlayers.map((player, index) => {
-                              return <li key={`${player}-${index}`}>
-                                Player: <a href={`https://etherscan.io/address/${player}`} target="_blank">
+                              return <p key={`${player}-${index}`}>{index+1}. player: <br></br>
+                                <li><a href={`https://etherscan.io/address/${player}`} target="_blank">
                                   {player}
-                                </a>
-                              </li>
+                                </a></li>
+                              </p>
+                              
                             })
                           }
                         </ul>
@@ -152,7 +198,7 @@ export default function Home() {
                     <div className="card-content">
                       <div className="content">
                         <h2>Pool</h2>
-                        <p>{lotteryPool} Ether</p>
+                        <p>Total of {lotteryPool} Ether</p>
                       </div>
                     </div>
                   </div>

@@ -48,7 +48,7 @@ contract Lottery is VRFConsumerBase {
     }
 
     function enter() public payable {
-        require(msg.value > .001 ether);
+        require(msg.value > .01 ether);
 
         // adresa igrača koji uplaćuje listić
         players.push(payable(msg.sender));

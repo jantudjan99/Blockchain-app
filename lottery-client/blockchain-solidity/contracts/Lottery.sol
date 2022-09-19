@@ -30,7 +30,7 @@ contract Lottery is VRFConsumerBase {
         return requestRandomness(keyHash, fee);
     }
 
-    function fulfillRandomness(bytes32 requestId, uint randomness) internal override {
+    function fulfillRandomness(bytes32, uint randomness) internal override {
         randomResult = randomness;
     }
 
