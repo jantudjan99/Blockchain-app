@@ -3,18 +3,19 @@
 }
 
 .imgbg {
-  background-image: url("../public/images/Lottery-bg.jpg");
-  background-size:cover;
-  min-height: 100%;
+  background-image: url("../public/images/Lottery-bg.png");
+  background-repeat: no-repeat;
+  min-height: 800px;
   min-width: 1024px;
-	
+	max-width:100%;
   width: 100%;
-  height: auto;
 	
   top: 0;
   left: 0;
 }
-
+.textColor {
+  color:white;
+}
 
 .is-link {
   background-color: #eff1fa;

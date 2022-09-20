@@ -56,8 +56,8 @@ export default function Home() {
   }
 
   const enterLotteryHandler = async () => {
-    setError('')
-    setSuccessMsg('')
+    
+    
     try {
       /* Postavljamo vrijednost jednog uloga na 0.005 Ethera */
       await lcContract.methods.enter().send({
@@ -67,14 +67,18 @@ export default function Home() {
         gasPrice: null
       })
       updateState()
+      setSuccessMsg('You invested 0.005 Ethers!')
     } catch(err) {
+      setError('There has been an error!')
       setError(err.message)
     }
   }
 
+
   const payWinnerHandler = async () => {
     setError('')
     setSuccessMsg('')
+    console.log('Id lottery: ',lotteryId)
     try {
       await lcContract.methods.payWinner().send({
         from: address,
@@ -145,7 +149,9 @@ export default function Home() {
               <button onClick={connectWalletHandler} className="button is-link">Connect your Wallet</button>
             </div>
           </div>
-        </nav>
+        </nav><section className="mt-5 container">
+            <h2>Rules: If you want to participate you must pay 0.005 Ethers. And wait for the admin to checkout the winnings!</h2>
+          </section>
         <div className="container">
           <section className="mt-5">
             <div className="columns">
@@ -170,8 +176,8 @@ export default function Home() {
                 </section>
               </div>
               <div className={`${styles.lotteryinfo} column is-one-third`}>
-              <section className="mt-5">
-                </section>
+                
+              
                 <section className="mt-5">
                   <div className="card">
                     <div className="card-content">
